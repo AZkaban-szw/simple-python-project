@@ -1,0 +1,7 @@
+# .dockerignore：排除不需要的文件
+venv/          # 排除虚拟环境
+__pycache__/   # 排除Python编译缓存
+.git/          # 排除Git目录
+.github/       # 排除GitHub工作流目录
+.env           # 注意：容器运行时需单独挂载.env，此处排除本地.env
+*.pyc          # 排除编译后的.pyc文件

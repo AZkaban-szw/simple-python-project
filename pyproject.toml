@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 88  # 每行代码最大长度
+target-version = ['py39']  # 适配Python 3.9+（可根据你的Python版本调整）
+exclude = '''
+/(
+    \.venv          # 排除虚拟环境
+  | \.git           # 排除Git目录
+  | \.github        # 排除GitHub工作流目录
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+exclude = [".venv", ".git", ".github"]  # 数组格式：排除指定目录
+extend-ignore = ["E203"]  # 修复语法：用数组包裹单个规则（原错误点）

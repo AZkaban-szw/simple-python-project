@@ -1,0 +1,10 @@
+# .gitignore：Git忽略规则
+venv/          # 排除虚拟环境
+__pycache__/   # 排除Python编译缓存
+.env           # 排除密钥文件（核心！敏感信息不提交）
+.gitignore     # 已存在，可忽略
+.dockerignore  # 已存在，可忽略
+Dockerfile     # 可提交（Docker构建规则需共享）
+requirements.txt  # 可提交（依赖列表需共享）
+*.pyc          # 排除编译文件
+pytest.ini     # 若后续添加pytest配置，可排除
