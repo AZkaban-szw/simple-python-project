@@ -1,0 +1,66 @@
+# 1. 工作流的名字（随便起，方便在GitHub上识别）
+name: Project CI（按文档要求自动检查+测试+Docker构建）
+
+# 2. 触发条件：什么时候运行这个工作流？
+# 文档没指定触发时机，这里选“代码推送到main分支时”（最常用，符合开发逻辑）
+on:
+  push:
+    branches: [ "main" ]  # 只有推代码到main分支，才触发工作流
+
+# 3. 工作流要执行的“任务”（文档要求的4个操作，拆成2个任务：先检查测试，再构建Docker）
+jobs:
+  # 任务1：跑代码检查（linting）、格式化校验（formatting checks）、测试（tests）
+  lint-and-test:
+    runs-on: ubuntu-latest  # 用GitHub提供的Ubuntu系统运行（免费，稳定）
+    steps:
+      # 步骤1：拉取GitHub仓库的代码（让工作流能拿到你的项目文件）
+      - name: 拉取GitHub仓库代码
+        uses: actions/checkout@v4  # GitHub官方工具，直接用
+
+      # 步骤2：设置Python环境（必须和你本地项目的Python版本一致！比如之前用的3.9）
+      - name: 设置Python 3.9（和本地一致）
+        uses: actions/setup-python@v5  # GitHub官方Python工具
+        with:
+          python-version: "3.9"  # 这里填你本地的Python版本（比如3.10，改这里就行）
+          cache: "pip"  # 缓存pip依赖（下次运行更快，不用重新下载）
+
+      # 步骤3：安装项目依赖（比如python-dotenv、flake8、pytest）
+      - name: 安装依赖（从requirements.txt读取）
+        run: |  # 执行以下2条命令
+          python -m pip install --upgrade pip  # 更新pip
+          pip install -r requirements.txt  # 安装requirements.txt里的所有依赖
+
+      # 步骤4：跑代码检查（linting，对应文档要求）
+      - name: 代码检查（flake8）
+        run: flake8 . --count  # 和你本地执行的flake8 .命令类似，检查所有文件
+
+      # 步骤5：跑格式化校验（formatting checks，对应文档要求）
+      - name: 格式化校验（black）
+        run: black --check .  # 校验代码是否符合black格式（不自动修改，只检查）
+
+      # 步骤6：跑测试（tests，对应文档要求）
+      - name: 运行测试（pytest）
+        run: pytest test_main.py -v  # 和你本地执行的测试命令一样
+        env:  # 给工作流传密钥（因为测试需要API_KEY，本地存在.env，GitHub没有）
+          API_KEY: ${{ secrets.API_KEY }}  # 从GitHub仓库的“密钥”中读取API_KEY
+
+  # 任务2：构建Docker镜像（docker builds，对应文档要求）
+  build-docker:
+    runs-on: ubuntu-latest  # 同样用Ubuntu系统
+    needs: lint-and-test  # 依赖关系：只有“任务1（检查+测试）成功”，才跑这个任务
+    steps:
+      # 步骤1：拉取GitHub仓库代码（和任务1一样，需要项目文件）
+      - name: 拉取GitHub仓库代码
+        uses: actions/checkout@v4
+
+      # 步骤2：设置Docker构建工具（GitHub官方工具，确保能构建Docker镜像）
+      - name: 设置Docker Buildx（优化构建速度）
+        uses: docker/setup-buildx-action@v3
+
+      # 步骤3：构建Docker镜像（对应文档要求的docker builds）
+      - name: 构建Docker镜像（不推送）
+        uses: docker/build-push-action@v5  # GitHub官方Docker构建工具
+        with:
+          context: .  # 构建上下文：用项目根目录的所有文件（和本地docker build一样）
+          push: false  # 只构建镜像，不推送到Docker仓库（小白先不推，验证构建成功即可）
+          tags: simple-python-app:latest  # 给镜像起名字（和本地构建的名字一样）
