@@ -8,3 +8,7 @@ Dockerfile     # 可提交（Docker构建规则需共享）
 requirements.txt  # 可提交（依赖列表需共享）
 *.pyc          # 排除编译文件
 pytest.ini     # 若后续添加pytest配置，可排除
+# DVC相关：忽略原始数据，仅保留指针文件
+data.dvc/*.csv          # 忽略所有.csv原始数据文件
+.dvc/cache/             # 忽略DVC本地缓存
+.dvc/tmp/               # 忽略DVC临时文件
