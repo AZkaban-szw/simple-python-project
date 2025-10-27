@@ -5,7 +5,9 @@ name: Project CI（按文档要求自动检查+测试+Docker构建）
 # 文档没指定触发时机，这里选“代码推送到main分支时”（最常用，符合开发逻辑）
 on:
   push:
-    branches: [ "main" ]  # 只有推代码到main分支，才触发工作流
+    branches: [ "main", "staging", "dev" ]  # 新增dev分支
+  pull_request:
+    branches: [ "main", "staging", "dev" ]  # 新增dev分支
 
 # 3. 工作流要执行的“任务”（文档要求的4个操作，拆成2个任务：先检查测试，再构建Docker）
 jobs:
