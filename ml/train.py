@@ -5,7 +5,7 @@ import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 from sklearn.model_selection import train_test_split
-from data_pipeline import load_data, train_tfidf  # 删除未使用的preprocess_text
+from data_pipeline import load_data, train_tfidf
 from git import Repo  # 用于获取Git commit SHA（代码版本）
 
 
@@ -19,14 +19,10 @@ def get_git_commit() -> str:
         return "unknown_commit"
 
 
-def train_model(
-    data_path: str,
-    model_name: str,
-    max_iter: int = 100,
-    C: float = 1.0
-):
+def train_model(data_path: str, model_name: str, max_iter: int = 100, C: float = 1.0):
     """
     训练模型并通过MLflow跟踪
+
     Args:
         data_path: 数据集路径（v1或v2）
         model_name: 模型名称，如"baseline_model"、"improved_model"

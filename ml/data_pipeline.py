@@ -20,8 +20,7 @@ def load_data(file_path: str) -> pd.DataFrame:
 
 
 def train_tfidf(
-    data: pd.DataFrame,
-    save_path: str = "ml/configs/tfidf.pkl"
+    data: pd.DataFrame, save_path: str = "ml/configs/tfidf.pkl"
 ) -> TfidfVectorizer:
     """训练TF-IDF向量器（把文本转特征），并保存"""
     # 保留1000个高频词
@@ -33,10 +32,7 @@ def train_tfidf(
     return tfidf
 
 
-def preprocess_text(
-    text: str,
-    tfidf_path: str = "ml/configs/tfidf.pkl"
-) -> any:
+def preprocess_text(text: str, tfidf_path: str = "ml/configs/tfidf.pkl") -> any:
     """单条文本预处理（App调用时用）：加载TF-IDF→转换文本"""
     tfidf = joblib.load(tfidf_path)
     return tfidf.transform([text])  # 返回特征矩阵（模型输入格式）
