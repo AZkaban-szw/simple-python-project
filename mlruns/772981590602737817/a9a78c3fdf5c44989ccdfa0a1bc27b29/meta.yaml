@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/12492/Desktop/Devops%20and%20MLOps/simple-python-project/mlruns/772981590602737817/a9a78c3fdf5c44989ccdfa0a1bc27b29/artifacts
+end_time: 1761550604452
+entry_point_name: ''
+experiment_id: '772981590602737817'
+lifecycle_stage: active
+run_id: a9a78c3fdf5c44989ccdfa0a1bc27b29
+run_name: improved_model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761550602158
+status: 3
+tags: []
+user_id: '12492'

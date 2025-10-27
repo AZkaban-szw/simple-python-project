@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/12492/Desktop/Devops%20and%20MLOps/simple-python-project/mlruns/772981590602737817/models/m-515c36067bbb4963b9d39fb77d3a36df/artifacts
+creation_timestamp: 1761550598370
+experiment_id: '772981590602737817'
+last_updated_timestamp: 1761550602109
+model_id: m-515c36067bbb4963b9d39fb77d3a36df
+model_type: null
+name: model
+source_run_id: eaabfc75e43e42e497e0622c418bebf7
+status: 2
+status_message: null

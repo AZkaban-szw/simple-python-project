@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib  # 保存/加载预处理模型
 
+
 def load_data(file_path: str) -> pd.DataFrame:
     """加载数据集（v1或v2）"""
     try:
@@ -17,19 +18,29 @@ def load_data(file_path: str) -> pd.DataFrame:
         print(f"加载数据失败：{e}")
         raise
 
-def train_tfidf(data: pd.DataFrame, save_path: str = "ml/configs/tfidf.pkl") -> TfidfVectorizer:
+
+def train_tfidf(
+    data: pd.DataFrame,
+    save_path: str = "ml/configs/tfidf.pkl"
+) -> TfidfVectorizer:
     """训练TF-IDF向量器（把文本转特征），并保存"""
-    tfidf = TfidfVectorizer(stop_words="english", max_features=1000)  # 保留1000个高频词
+    # 保留1000个高频词
+    tfidf = TfidfVectorizer(stop_words="english", max_features=1000)
     tfidf.fit(data["text"])  # 用训练数据拟合
     # 保存向量器（后续App调用模型时需用同一向量器）
     joblib.dump(tfidf, save_path)
     print(f"TF-IDF向量器已保存到：{save_path}")
     return tfidf
 
-def preprocess_text(text: str, tfidf_path: str = "ml/configs/tfidf.pkl") -> any:
+
+def preprocess_text(
+    text: str,
+    tfidf_path: str = "ml/configs/tfidf.pkl"
+) -> any:
     """单条文本预处理（App调用时用）：加载TF-IDF→转换文本"""
     tfidf = joblib.load(tfidf_path)
     return tfidf.transform([text])  # 返回特征矩阵（模型输入格式）
+
 
 # 测试代码：运行脚本时验证预处理功能
 if __name__ == "__main__":
@@ -41,4 +52,8 @@ if __name__ == "__main__":
     # 测试单条文本预处理
     test_text = "I like this movie"
     processed_text = preprocess_text(test_text)
-    print(f"测试文本预处理结果：形状{processed_text.shape}（正确应为(1,1000)）")
+    result_msg = (
+        f"测试文本预处理结果：形状{processed_text.shape}"
+        "（正确应为(1,1000)）"
+    )
+    print(result_msg)

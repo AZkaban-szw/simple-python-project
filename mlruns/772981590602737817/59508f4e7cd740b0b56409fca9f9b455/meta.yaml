@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/12492/Desktop/Devops%20and%20MLOps/simple-python-project/mlruns/772981590602737817/59508f4e7cd740b0b56409fca9f9b455/artifacts
+end_time: 1761550538744
+entry_point_name: ''
+experiment_id: '772981590602737817'
+lifecycle_stage: active
+run_id: 59508f4e7cd740b0b56409fca9f9b455
+run_name: baseline_model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761550538702
+status: 4
+tags: []
+user_id: '12492'

@@ -2,13 +2,12 @@
 import mlflow
 import mlflow.sklearn
 import joblib
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 from sklearn.model_selection import train_test_split
-from data_pipeline import load_data, train_tfidf, preprocess_text
-import os
+from data_pipeline import load_data, train_tfidf  # 删除未使用的preprocess_text
 from git import Repo  # 用于获取Git commit SHA（代码版本）
+
 
 def get_git_commit() -> str:
     """获取当前Git提交的SHA（记录代码版本）"""
@@ -19,13 +18,20 @@ def get_git_commit() -> str:
         print(f"获取Git commit失败：{e}")
         return "unknown_commit"
 
-def train_model(data_path: str, model_name: str, max_iter: int = 100, C: float = 1.0):
+
+def train_model(
+    data_path: str,
+    model_name: str,
+    max_iter: int = 100,
+    C: float = 1.0
+):
     """
     训练模型并通过MLflow跟踪
-    data_path：数据集路径（v1或v2）
-    model_name：模型名称（如"baseline_model"、"improved_model"）
-    max_iter：逻辑回归迭代次数（超参数）
-    C：逻辑回归正则化强度（超参数，越小正则化越强）
+    Args:
+        data_path: 数据集路径（v1或v2）
+        model_name: 模型名称，如"baseline_model"、"improved_model"
+        max_iter: 逻辑回归迭代次数（超参数）
+        C: 逻辑回归正则化强度（超参数，越小正则化越强）
     """
     # 1. 初始化MLflow（跟踪实验）
     mlflow.set_experiment("Sentiment_Analysis_Experiments")  # 实验名称
@@ -44,8 +50,10 @@ def train_model(data_path: str, model_name: str, max_iter: int = 100, C: float =
         mlflow.log_param("model_type", "LogisticRegression")  # 模型类型
         mlflow.log_param("max_iter", max_iter)  # 超参数1
         mlflow.log_param("C", C)  # 超参数2
-        mlflow.log_param("dataset_path", data_path)  # 数据集路径（区分v1/v2）
-        mlflow.log_param("dataset_version", data_path.split("_")[-1].split(".")[0])  # 提取v1/v2
+        mlflow.log_param("dataset_path", data_path)  # 数据集路径
+        # 提取v1/v2
+        dataset_version = data_path.split("_")[-1].split(".")[0]
+        mlflow.log_param("dataset_version", dataset_version)
         mlflow.log_param("git_commit", get_git_commit())  # 代码版本
 
         # 4. 训练模型
@@ -67,7 +75,8 @@ def train_model(data_path: str, model_name: str, max_iter: int = 100, C: float =
         # 记录到MLflow（后续可直接从MLflow下载）
         mlflow.sklearn.log_model(model, "model")  # 记录模型
         mlflow.log_artifact(model_save_path, "model_files")  # 记录模型文件
-        mlflow.log_artifact("ml/configs/tfidf.pkl", "preprocessing")  # 记录TF-IDF
+        # 记录TF-IDF
+        mlflow.log_artifact("ml/configs/tfidf.pkl", "preprocessing")
         # 记录混淆矩阵（简单文本形式）
         cm = confusion_matrix(y_test, y_pred)
         cm_path = f"ml/registry/{model_name}_cm.txt"
@@ -79,8 +88,11 @@ def train_model(data_path: str, model_name: str, max_iter: int = 100, C: float =
         print(f"\n===== {model_name} 训练完成 =====")
         print(f"测试集准确率：{accuracy:.4f}")
         print(f"测试集F1分数：{f1:.4f}")
-        print(f"MLflow Run ID：{mlflow.active_run().info.run_id}")
+        # 用临时变量缩短长引用（解决E501）
+        run_id = mlflow.active_run().info.run_id
+        print(f"MLflow Run ID：{run_id}")
         print(f"模型保存路径：{model_save_path}")
+
 
 # 主函数：运行2个实验（基线+改进模型）
 if __name__ == "__main__":
@@ -90,14 +102,14 @@ if __name__ == "__main__":
         data_path="data.dvc/raw_data_v1.csv",
         model_name="baseline_model",
         max_iter=100,
-        C=1.0
+        C=1.0,
     )
 
-    # 2. 训练改进模型（用v2清洗数据，调整超参数：增加迭代次数，减小C增强正则化）
+    # 2. 训练改进模型（用v2清洗数据，调整超参数）
     print("\n正在训练改进模型（v2数据，调整超参数）...")
     train_model(
         data_path="data.dvc/clean_data_v2.csv",
         model_name="improved_model",
         max_iter=200,  # 增加迭代次数（避免欠拟合）
-        C=0.5  # 减小C（增强正则化，避免过拟合）
+        C=0.5,  # 减小C（增强正则化，避免过拟合）
     )
