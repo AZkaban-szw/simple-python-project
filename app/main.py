@@ -1,3 +1,18 @@
+# app/main.py 顶部新增代码
+import sys
+import os
+
+# 获取项目根目录路径（当前文件是app/main.py，上一级就是项目根目录）
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 将根目录加入模块搜索路径
+sys.path.append(project_root)
+
+# 原有代码保持不变
+from dotenv import load_dotenv
+import os
+import joblib
+from ml.data_pipeline import preprocess_text  # 导入预处理函数
+# ... 其余代码 ...
 # app/main.py：ML驱动的情感分析App（调用训练好的模型）
 from dotenv import load_dotenv
 import os
