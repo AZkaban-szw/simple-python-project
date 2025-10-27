@@ -2,7 +2,7 @@
 import sys
 import os
 
-# 获取项目根目录路径（当前文件是app/main.py，上一级就是项目根目录）
+# 获取项目根目录路径（当前文件是app/main.py，上一级就是项目根目录）1
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 将根目录加入模块搜索路径
 sys.path.append(project_root)
