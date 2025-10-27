@@ -49,7 +49,6 @@ if __name__ == "__main__":
     test_text = "I like this movie"
     processed_text = preprocess_text(test_text)
     result_msg = (
-        f"测试文本预处理结果：形状{processed_text.shape}"
-        "（正确应为(1,1000)）"
+        f"测试文本预处理结果：形状{processed_text.shape}" "（正确应为(1,1000)）"
     )
     print(result_msg)
