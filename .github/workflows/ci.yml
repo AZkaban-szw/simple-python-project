@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4  # GitHub官方工具，直接用
 
       # 步骤2：设置Python环境（必须和你本地项目的Python版本一致！比如之前用的3.9）
-      - name: 设置Python 3.9（和本地一致）
+      - name: Set up Python 3.9（和本地一致）
         uses: actions/setup-python@v5  # GitHub官方Python工具
         with:
           python-version: "3.9"  # 这里填你本地的Python版本（比如3.10，改这里就行）
